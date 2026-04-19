@@ -43,7 +43,9 @@ public class TiledAshleyConfigurator {
         addEntityController(tileMapObject, entity);
         addEntityMove(tile, entity);
         addEntityAnimation(tile, entity);
+
         entity.add(new Facing(Facing.FacingDirection.DOWN));
+        entity.add(new Fsm(entity));
 
         this.engine.addEntity(entity);
     }

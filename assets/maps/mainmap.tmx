@@ -28,7 +28,7 @@
   <object id="10" name="Player" gid="2" x="25" y="214" width="32" height="32">
    <properties>
     <property name="camFollow" type="bool" value="true"/>
-    <property name="controller" type="bool" value="false"/>
+    <property name="controller" type="bool" value="true"/>
    </properties>
   </object>
   <object id="11" gid="6" x="44" y="200" width="41" height="63"/>
@@ -37,10 +37,5 @@
   <object id="14" gid="6" x="176" y="123" width="41" height="63"/>
   <object id="15" gid="7" x="96" y="128" width="16" height="16"/>
   <object id="17" gid="8" x="149" y="132" width="32" height="32"/>
-  <object id="19" type="CHARACTER" gid="17" x="70.25" y="204.5" width="40" height="50">
-   <properties>
-    <property name="controller" type="bool" value="true"/>
-   </properties>
-  </object>
  </objectgroup>
 </map>

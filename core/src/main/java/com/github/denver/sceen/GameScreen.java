@@ -7,12 +7,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.utils.Disposable;
 import com.github.denver.Main;
 import com.github.denver.asset.MapAsset;
+import com.github.denver.components.Fsm;
 import com.github.denver.input.GameControllerState;
 import com.github.denver.input.KeyboardController;
-import com.github.denver.system.AnimationSystem;
-import com.github.denver.system.ControllerSystem;
-import com.github.denver.system.MoveSystem;
-import com.github.denver.system.RenderSystem;
+import com.github.denver.system.*;
 import com.github.denver.tiled.TiledAshleyConfigurator;
 import com.github.denver.tiled.TiledService;
 
@@ -37,6 +35,8 @@ public class GameScreen extends ScreenAdapter {
 
        this.engine.addSystem(new ControllerSystem());
        this.engine.addSystem(new MoveSystem());
+       this.engine.addSystem(new FsmSystem());
+       this.engine.addSystem(new FacingSystem());
        this.engine.addSystem(new AnimationSystem(game.getAssetService()));
        this.engine.addSystem(new RenderSystem(game.getBatch(), game.getViewport(), game.getCamera()));
    }

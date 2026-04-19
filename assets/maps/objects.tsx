@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.1" name="objects" tilewidth="400" tileheight="500" tilecount="7" columns="0">
+<tileset version="1.10" tiledversion="1.12.1" name="objects" tilewidth="80" tileheight="112" tilecount="6" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="1" type="Object">
   <properties>
@@ -76,13 +76,5 @@
   <objectgroup draworder="index" id="2">
    <object id="1" x="3" y="12" width="26" height="16"/>
   </objectgroup>
- </tile>
- <tile id="16" type="Object">
-  <properties>
-   <property name="animationSpeed" type="float" value="1"/>
-   <property name="atlasAsset" value="CHARACTERS"/>
-   <property name="speed" type="float" value="3.5"/>
-  </properties>
-  <image source="objects/Yujin/00_yujin_devil_spritesheet.png" width="400" height="500"/>
  </tile>
 </tileset>

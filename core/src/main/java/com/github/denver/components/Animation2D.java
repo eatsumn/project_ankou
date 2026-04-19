@@ -21,6 +21,9 @@ public class Animation2D implements Component {
     private Animation<TextureRegion> animation;
     private boolean dirty;
 
+
+
+
     public Animation2D(AtlasAsset atlasAsset, String atlasKey, AnimationType type, PlayMode playMode, float speed) {
         this.atlasAsset = atlasAsset;
         this.atlasKey = atlasKey;
@@ -29,7 +32,6 @@ public class Animation2D implements Component {
         this.speed = speed;
         this.stateTime = 0f;
         this.animation = null;
-        this.dirty = true;
     }
 
     public void setAnimation(Animation<TextureRegion> animation, FacingDirection direction) {
@@ -80,20 +82,18 @@ public class Animation2D implements Component {
         return dirty;
     }
 
+    public boolean isFinished() {
+        return animation.isAnimationFinished(stateTime);
+    }
+
     public float incAndGetStateTime(float deltaTime) {
         this.stateTime += deltaTime * speed;
         return this.stateTime;
     }
 
-    public boolean isFinished() {
-        return animation.isAnimationFinished(stateTime);
-    }
-
     public enum AnimationType {
         IDLE,
-        WALK,
-        ATTACK,
-        DAMAGED,
+        WALK
         ;
 
         private final String atlasKey;
@@ -106,5 +106,6 @@ public class Animation2D implements Component {
             return atlasKey;
         }
     }
+
 }
 
