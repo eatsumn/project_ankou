@@ -1,0 +1,55 @@
+
+characters.png
+size: 4096, 512
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+yujin/yujin
+  rotate: false
+  xy: 2, 2
+  size: 400, 500
+  orig: 400, 500
+  offset: 0, 0
+  index: 0
+yujin/yujin
+  rotate: false
+  xy: 406, 2
+  size: 400, 500
+  orig: 400, 500
+  offset: 0, 0
+  index: 1
+yujin/yujin
+  rotate: false
+  xy: 810, 2
+  size: 400, 500
+  orig: 400, 500
+  offset: 0, 0
+  index: 2
+yujin/yujin
+  rotate: false
+  xy: 1214, 2
+  size: 400, 500
+  orig: 400, 500
+  offset: 0, 0
+  index: 3
+yujin/yujin
+  rotate: false
+  xy: 1618, 2
+  size: 400, 500
+  orig: 400, 500
+  offset: 0, 0
+  index: 4
+yujin/yujin
+  rotate: false
+  xy: 2022, 2
+  size: 400, 500
+  orig: 400, 500
+  offset: 0, 0
+  index: 5
+yujin/yujin
+  rotate: false
+  xy: 2426, 2
+  size: 400, 500
+  orig: 400, 500
+  offset: 0, 0
+  index: 6

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="18" height="16" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="20">
+ <properties>
+  <property name="music" value="TOWN"/>
+ </properties>
+ <tileset firstgid="1" source="objects.tsx"/>
+ <tileset firstgid="18" source="tileset.tsx"/>
+ <layer id="1" name="ground" width="18" height="16">
+  <data encoding="base64" compression="zlib">
+   eJy9kjsOwjAQRH0IPl3EpwNq6DkAcU2oUXqooQ894QI5i6/FRFpLo9XGMiBh6Umx5X0rzyY457ZgbbAD4QNmxlkJCvk+gkpxMmr2YGScF+J4gI5oQS13DkYN7/u3bsBZam/gQlyNvr1zJXl4cgTy1EZdLvwm9vjM2phldDxBI9laKxhz0JkyzYCnon58P2Z6Tzh5dp2aAc/CU8ZWD00qq+h5keebuQ2tf3j0//0rYzBRTAfulgnPHCwUy4z+byPUoCs=
+  </data>
+ </layer>
+ <layer id="3" name="water" width="18" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjALKQRAQS0HZgUTqAQAmsAC+
+  </data>
+ </layer>
+ <objectgroup id="6" name="trigger">
+  <object id="16" name="trap_trigger" x="97" y="114" width="14" height="12">
+   <properties>
+    <property name="sensor" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="objects">
+  <object id="5" gid="3" x="197" y="118" width="80" height="112"/>
+  <object id="9" gid="5" x="32" y="32" width="16" height="16"/>
+  <object id="10" name="Player" gid="2" x="25" y="214" width="32" height="32">
+   <properties>
+    <property name="camFollow" type="bool" value="true"/>
+    <property name="controller" type="bool" value="false"/>
+   </properties>
+  </object>
+  <object id="11" gid="6" x="44" y="200" width="41" height="63"/>
+  <object id="12" gid="6" x="137" y="206" width="41" height="63"/>
+  <object id="13" gid="6" x="72" y="93" width="41" height="63"/>
+  <object id="14" gid="6" x="176" y="123" width="41" height="63"/>
+  <object id="15" gid="7" x="96" y="128" width="16" height="16"/>
+  <object id="17" gid="8" x="149" y="132" width="32" height="32"/>
+  <object id="19" type="CHARACTER" gid="17" x="70.25" y="204.5" width="40" height="50">
+   <properties>
+    <property name="controller" type="bool" value="true"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
