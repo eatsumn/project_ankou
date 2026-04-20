@@ -1,22 +1,30 @@
 {
-    "activeFile": "objects.tsx",
+    "activeFile": "tileset.tsx",
     "expandedProjectPaths": [
         "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "Deez.tsx": {
+            "dynamicWrapping": false
+        },
+        "Yujin.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
         "mainmap.tmx": {
             "scale": 3,
-            "selectedLayer": 0,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": -6.333333333333329,
-                "y": 27.833333333333336
+                "x": 29.333333333333336,
+                "y": 79.66666666666667
             }
         },
         "objects.tsx": {
             "dynamicWrapping": true,
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 0.33
         },
         "tileset.tsx": {
             "dynamicWrapping": false,
@@ -24,14 +32,23 @@
             "scaleInEditor": 3
         }
     },
+    "last.imagePath": "D:/SimulatedDesktop/Animations/Character_Sprites",
     "openFiles": [
         "mainmap.tmx",
         "objects.tsx",
         "tileset.tsx"
     ],
+    "project": "denver.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
+        "Yujin.tsx",
         "mainmap.tmx",
-        "tileset.tsx",
-        "objects.tsx"
-    ]
+        "objects.tsx",
+        "tileset.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 500,
+        "width": 400
+    }
 }
