@@ -1,50 +1,67 @@
 {
-    "activeFile": "tileset.tsx",
+    "activeFile": "mainmap.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "Deez.tsx": {
-            "dynamicWrapping": false
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 0.75
         },
         "Yujin.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
-            "scaleInEditor": 1.5
+            "scaleInEditor": 0.75
+        },
+        "chara1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 0.75
+        },
+        "chara_spritesheet.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 0.75
         },
         "mainmap.tmx": {
             "scale": 3,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 29.333333333333336,
-                "y": 79.66666666666667
+                "x": 100.66666666666667,
+                "y": 246.33333333333331
             }
         },
         "objects.tsx": {
             "dynamicWrapping": true,
             "scaleInDock": 1,
-            "scaleInEditor": 0.33
+            "scaleInEditor": 0.75
         },
         "tileset.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
-            "scaleInEditor": 3
+            "scaleInEditor": 0.75
         }
     },
-    "last.imagePath": "D:/SimulatedDesktop/Animations/Character_Sprites",
+    "last.imagePath": "D:/SimulatedDesktop/Animations",
     "openFiles": [
         "mainmap.tmx",
         "objects.tsx",
-        "tileset.tsx"
+        "tileset.tsx",
+        "Deez.tsx",
+        "Yujin.tsx",
+        "chara1.tsx",
+        "chara_spritesheet.tsx"
     ],
     "project": "denver.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "chara_spritesheet.tsx",
+        "chara1.tsx",
         "Yujin.tsx",
-        "mainmap.tmx",
+        "Deez.tsx",
+        "tileset.tsx",
         "objects.tsx",
-        "tileset.tsx"
+        "mainmap.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

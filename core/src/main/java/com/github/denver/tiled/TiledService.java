@@ -6,7 +6,14 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.github.denver.Main;
 import com.github.denver.asset.AssetService;
 import com.github.denver.asset.MapAsset;
 
@@ -14,18 +21,20 @@ import java.util.function.Consumer;
 
 public class TiledService {
     private final AssetService assetService;
+    private final World physicWorld;
 
     private TiledMap currentMap;
     private Consumer<TiledMap> mapChangeConsumer;
     private Consumer<TiledMapTileMapObject> loadObjectConsumer;
     private LoadTileConsumer loadTileConsumer;
 
-    public TiledService(AssetService assetService) {
+    public TiledService(AssetService assetService, World physicWorld) {
         this.assetService = assetService;
         this.mapChangeConsumer = null;
         this.loadObjectConsumer = null;
         this.currentMap = null;
         this.loadTileConsumer = null;
+        this.physicWorld = physicWorld;
     }
 
     public TiledMap loadMap(MapAsset mapAsset){
@@ -38,6 +47,14 @@ public class TiledService {
     public void setMap(TiledMap map) {
         if(this.currentMap != null) {
             this.assetService.unload(this.currentMap.getProperties().get("mapAsset", MapAsset.class));
+
+            Array<Body> bodies = new Array<>();
+            physicWorld.getBodies(bodies);
+            for (Body body : bodies) {
+                if("environment".equals(body.getUserData())){
+                    physicWorld.destroyBody(body);
+                }
+            }
         }
 
         this.currentMap = map;
@@ -56,6 +73,54 @@ public class TiledService {
                 loadTileLayer(tileLayer);
             }
         }
+
+
+
+        spawnMapBoundary(tiledMap);
+    }
+
+    private void spawnMapBoundary(TiledMap tiledMap) {
+        int width = tiledMap.getProperties().get("width", 0, Integer.class);
+        int tileW = tiledMap.getProperties().get("tilewidth", 0, Integer.class);
+        int height = tiledMap.getProperties().get("height", 0, Integer.class);
+        int tileH = tiledMap.getProperties().get("tileheight", 0, Integer.class);
+        float mapW = width * tileW * Main.UNIT_SCALE;
+        float mapH = height * tileH * Main.UNIT_SCALE;
+        float halfH = mapH * 0.5f;
+        float halfW = mapW * 0.5f;
+
+        float boxThickness = 0.5f;
+
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.setZero();
+        bodyDef.fixedRotation = true;
+        Body body = physicWorld.createBody(bodyDef);
+        body.setUserData("environment");
+
+        // left edge
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(boxThickness, halfH, new Vector2(-boxThickness, halfH), 0f);
+        body.createFixture(shape, 0f).setFriction(0f);
+        shape.dispose();
+        // right edge
+        shape = new PolygonShape();
+        shape.setAsBox(boxThickness, halfH, new Vector2(mapW + boxThickness, halfH), 0f);
+        body.createFixture(shape, 0f).setFriction(0f);
+        shape.dispose();
+        // bottom edge
+        shape = new PolygonShape();
+        shape.setAsBox(halfW, boxThickness, new Vector2(halfW, -boxThickness), 0f);
+        body.createFixture(shape, 0f).setFriction(0f);
+        shape.dispose();
+        // top edge
+        shape = new PolygonShape();
+        shape.setAsBox(halfW, boxThickness, new Vector2(halfW, mapH + boxThickness), 0f);
+        body.createFixture(shape, 0f).setFriction(0f);
+        shape.dispose();
+
+
+
 
     }
 

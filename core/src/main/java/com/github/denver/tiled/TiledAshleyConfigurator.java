@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FileTextureData;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.objects.TiledMapTileMapObject;
 import com.badlogic.gdx.math.Vector2;
@@ -89,11 +90,38 @@ public class TiledAshleyConfigurator {
         addEntityController(tileMapObject, entity);
         addEntityMove(tile, entity);
         addEntityAnimation(tile, entity);
+        BodyDef.BodyType bodyType = getObjectBodyType(tile);
+        addEntityPhysic(tile.getObjects(),bodyType, Vector2.Zero, entity);
 
+
+        addEntityCameraFollow(tileMapObject, entity);
         entity.add(new Facing(Facing.FacingDirection.DOWN));
         entity.add(new Fsm(entity));
 
         this.engine.addEntity(entity);
+    }
+
+    private void addEntityCameraFollow(TiledMapTileMapObject mapObject, Entity entity) {
+        boolean camFollow = mapObject.getProperties().get("camFollow", false, Boolean.class);
+        if(!camFollow) return;
+
+        entity.add(new CameraFollow());
+    }
+
+    private BodyDef.BodyType getObjectBodyType(TiledMapTile tile){
+        String classType = tile.getProperties().get("type", "", String.class);
+        if("Prop".equals(classType)){
+            return BodyDef.BodyType.StaticBody;
+        }
+        return BodyDef.BodyType.DynamicBody;
+    }
+
+    private void addEntityPhysic(MapObjects objects, BodyDef.BodyType bodyType, Vector2 relativeTo, Entity entity) {
+       if (objects.getCount() == 0) return;
+
+       Transform transform = Transform.MAPPER.get(entity);
+       Body body = createBody(objects, transform.getPosition(), transform.getScaling(), bodyType, relativeTo, entity);
+       entity.add(new Physic(body, transform.getPosition().cpy()));
     }
 
     private void addEntityAnimation(TiledMapTile tile, Entity entity) {

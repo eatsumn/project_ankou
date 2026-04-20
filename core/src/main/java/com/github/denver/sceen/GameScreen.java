@@ -9,13 +9,14 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
 import com.github.denver.Main;
 import com.github.denver.asset.MapAsset;
-import com.github.denver.components.Fsm;
+import com.github.denver.audio.AudioService;
 import com.github.denver.input.GameControllerState;
 import com.github.denver.input.KeyboardController;
 import com.github.denver.system.*;
 import com.github.denver.tiled.TiledAshleyConfigurator;
 import com.github.denver.tiled.TiledService;
 
+import javax.sound.sampled.AudioSystem;
 import java.util.function.Consumer;
 
 
@@ -26,24 +27,27 @@ public class GameScreen extends ScreenAdapter {
    private final KeyboardController keyboardController;
    private final Main game;
    private final World physicWorld;
+   private final AudioService audioService;
 
 
    public GameScreen(Main game) {
        this.game = game;
-       this.tiledService = new TiledService(game.getAssetService());
-       this.engine = new Engine();
        this.physicWorld = new World(Vector2.Zero, true);
        this.physicWorld.setAutoClearForces(false);
+       this.tiledService = new TiledService(game.getAssetService(), this.physicWorld);
+       this.engine = new Engine();
        this.tiledAshleyConfigurator = new TiledAshleyConfigurator(this.engine, game.getAssetService(), physicWorld);
        this.keyboardController = new KeyboardController(GameControllerState.class, engine);
+       this.audioService = game.getAudioService();
 
 
-       this.engine.addSystem(new ControllerSystem());
-       this.engine.addSystem(new MoveSystem());
+       this.engine.addSystem(new ControllerSystem(game.getAudioService()));
+       this.engine.addSystem(new PhysicsMoveSystem());
        this.engine.addSystem(new FsmSystem());
        this.engine.addSystem(new FacingSystem());
        this.engine.addSystem(new PhysicSystem(physicWorld, 1/60f));
        this.engine.addSystem(new AnimationSystem(game.getAssetService()));
+       this.engine.addSystem(new CameraSystem(game.getCamera()));
        this.engine.addSystem(new RenderSystem(game.getBatch(), game.getViewport(), game.getCamera()));
        this.engine.addSystem(new PhysicDebugRenderSystem(physicWorld, game.getCamera()));
 
@@ -54,8 +58,11 @@ public class GameScreen extends ScreenAdapter {
         game.setInputProcessors(keyboardController);
         keyboardController.setActiveState(GameControllerState.class);
 
+
         Consumer<TiledMap> renderConsumer = this.engine.getSystem(RenderSystem.class)::setMap;
-        this.tiledService.setMapChangeConsumer(renderConsumer);
+        Consumer<TiledMap> cameraConsumer = this.engine.getSystem(CameraSystem.class)::setMap;
+        Consumer<TiledMap> audioConsumer = audioService::setMap;
+        this.tiledService.setMapChangeConsumer(renderConsumer.andThen(cameraConsumer).andThen(audioConsumer));
         this.tiledService.setLoadObjectConsumer(this.tiledAshleyConfigurator::onLoadObject);
         this.tiledService.setLoadTileConsumer(tiledAshleyConfigurator::onLoadTile);
 
