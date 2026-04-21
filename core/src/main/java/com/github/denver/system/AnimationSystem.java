@@ -11,11 +11,10 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.github.denver.asset.AssetService;
 import com.github.denver.asset.AtlasAsset;
-import com.github.denver.components.Animation2D;
-import com.github.denver.components.Animation2D.AnimationType;
-import com.github.denver.components.Facing;
-import com.github.denver.components.Facing.FacingDirection;
-import com.github.denver.components.Graphic;
+import com.github.denver.component.Animation2D;
+import com.github.denver.component.Facing;
+import com.github.denver.component.Facing.FacingDirection;
+import com.github.denver.component.Graphic;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,14 +58,14 @@ public class AnimationSystem extends IteratingSystem {
     private void updateAnimation(Animation2D animation2D, FacingDirection direction) {
         AtlasAsset atlasAsset = animation2D.getAtlasAsset();
         String atlasKey = animation2D.getAtlasKey();
-        AnimationType type = animation2D.getType();
+        Animation2D.AnimationType type = animation2D.getType();
         CacheKey cacheKey = new CacheKey(atlasAsset, atlasKey, type, direction);
         Animation<TextureRegion> animation = animationCache.computeIfAbsent(cacheKey, key -> {
             TextureAtlas textureAtlas = this.assetService.get(atlasAsset);
             String combinedKey = atlasKey + "/" + type.getAtlasKey() + "_" + direction.getAtlasKey();
             Array<AtlasRegion> regions = textureAtlas.findRegions(combinedKey);
             if (regions.isEmpty()) {
-                throw new GdxRuntimeException("No regions found for " + combinedKey);
+                throw new GdxRuntimeException("No regions found for " + key);
             }
             return new Animation<>(FRAME_DURATION, regions);
         });
@@ -76,7 +75,7 @@ public class AnimationSystem extends IteratingSystem {
     private record CacheKey(
         AtlasAsset atlasAsset,
         String atlasKey,
-        AnimationType type,
+        Animation2D.AnimationType type,
         FacingDirection direction
     ) {
     }

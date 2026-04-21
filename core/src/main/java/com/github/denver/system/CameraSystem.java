@@ -1,6 +1,5 @@
 package com.github.denver.system;
 
-
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
@@ -9,43 +8,43 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.github.denver.Main;
-import com.github.denver.components.CameraFollow;
-import com.github.denver.components.Transform;
-
+import com.github.denver.component.CameraFollow;
+import com.github.denver.component.Transform;
 
 public class CameraSystem extends IteratingSystem {
-    public static final float CAM_OFFSET_Y = 1f;
+    private static final float CAM_OFFSET_Y = 1f; // make the camera look up 'X' additional tiles
 
     private final Camera camera;
-    private Vector2 targetPosition;
     private final float smoothingFactor;
+    private final Vector2 targetPosition;
     private float mapW;
     private float mapH;
-
 
     public CameraSystem(Camera camera) {
         super(Family.all(CameraFollow.class, Transform.class).get());
         this.camera = camera;
+        this.smoothingFactor = 4f; // lower value = slower camera follow
         this.targetPosition = new Vector2();
-        this.smoothingFactor = 4f;
-
     }
 
-
+    /**
+     * Updates camera position with smooth following and boundary constraints.
+     */
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         Transform transform = Transform.MAPPER.get(entity);
-
         calcTargetPosition(transform.getPosition());
 
-
+        // Apply smoothing using linear interpolation (LERP)
         float progress = smoothingFactor * deltaTime;
         float smoothedX = MathUtils.lerp(camera.position.x, this.targetPosition.x, progress);
         float smoothedY = MathUtils.lerp(camera.position.y, this.targetPosition.y, progress);
         camera.position.set(smoothedX, smoothedY, camera.position.z);
     }
 
-
+    /**
+     * Calculates target camera position within map boundaries.
+     */
     private void calcTargetPosition(Vector2 entityPosition) {
         float targetX = entityPosition.x;
         float camHalfW = camera.viewportWidth * 0.5f;
@@ -55,8 +54,8 @@ public class CameraSystem extends IteratingSystem {
             targetX = MathUtils.clamp(targetX, min, max);
         }
 
-        float targetY = entityPosition.y;
-        float camHalfH = camera.viewportHeight * 0.5f + CAM_OFFSET_Y;
+        float targetY = entityPosition.y + CAM_OFFSET_Y;
+        float camHalfH = camera.viewportHeight * 0.5f;
         if (mapH > camHalfH) {
             float min = Math.min(camHalfH, mapH - camHalfH);
             float max = Math.max(camHalfH, mapH - camHalfH);
@@ -66,6 +65,9 @@ public class CameraSystem extends IteratingSystem {
         this.targetPosition.set(targetX, targetY);
     }
 
+    /**
+     * Sets up camera for a new map and positions it at the target entity.
+     */
     public void setMap(TiledMap tiledMap) {
         int width = tiledMap.getProperties().get("width", 0, Integer.class);
         int tileW = tiledMap.getProperties().get("tilewidth", 0, Integer.class);
@@ -80,7 +82,5 @@ public class CameraSystem extends IteratingSystem {
         }
 
         processEntity(camEntity, 0f);
-
     }
 }
-

@@ -3,16 +3,16 @@ package com.github.denver.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.github.denver.components.Fsm;
-
+import com.github.denver.component.Fsm;
 
 public class FsmSystem extends IteratingSystem {
+
     public FsmSystem() {
         super(Family.all(Fsm.class).get());
     }
 
     @Override
-    protected void processEntity(Entity entity, float v) {
+    protected void processEntity(Entity entity, float deltaTime) {
         Fsm.MAPPER.get(entity).getAnimationFsm().update();
     }
 }

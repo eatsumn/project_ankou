@@ -7,6 +7,11 @@ dependencies {
   api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
   api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
+  api "com.github.raeleus.stripe:freetype:$stripeVersion"
+  api "com.github.raeleus.TenPatch:tenpatch:$tenPatchVersion"
+  api "com.github.tommyettinger:textratypist:$textraTypistVersion"
+  api "com.github.tommyettinger:freetypist:$freeTypistVersion"
+
 
   if(enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"

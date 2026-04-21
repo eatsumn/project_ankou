@@ -3,31 +3,28 @@ package com.github.denver.system;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
-import com.badlogic.gdx.InputProcessor;
-import com.github.denver.asset.SoundAsset;
-import com.github.denver.audio.AudioService;
-import com.github.denver.components.Controller;
-import com.github.denver.components.Move;
+import com.github.denver.Main;
+import com.github.denver.component.Attack;
+import com.github.denver.component.Controller;
+import com.github.denver.component.Move;
 import com.github.denver.input.Command;
-
-import javax.sound.sampled.AudioSystem;
+import com.github.denver.screen.MenuScreen;
 
 public class ControllerSystem extends IteratingSystem {
+    private final Main game;
 
-    private final AudioService audioService;
-
-
-    public ControllerSystem(AudioService audioService) {
+    public ControllerSystem(Main game) {
         super(Family.all(Controller.class).get());
-        this.audioService = audioService;
+        this.game = game;
     }
 
+    /**
+     * Processes input commands for the entity, handling movement and actions.
+     */
     @Override
-    protected void processEntity(Entity entity, float v) {
-
+    protected void processEntity(Entity entity, float deltaTime) {
         Controller controller = Controller.MAPPER.get(entity);
-
-        if (controller.getReleasedCommands().isEmpty()&& controller.getPressedCommands().isEmpty()){
+        if (controller.getPressedCommands().isEmpty() && controller.getReleasedCommands().isEmpty()) {
             return;
         }
 
@@ -38,9 +35,9 @@ public class ControllerSystem extends IteratingSystem {
                 case LEFT -> moveEntity(entity, -1f, 0f);
                 case RIGHT -> moveEntity(entity, 1f, 0f);
                 case SELECT -> startEntityAttack(entity);
+                case CANCEL -> game.setScreen(MenuScreen.class);
             }
         }
-
         controller.getPressedCommands().clear();
 
         for (Command command : controller.getReleasedCommands()) {
@@ -51,21 +48,21 @@ public class ControllerSystem extends IteratingSystem {
                 case RIGHT -> moveEntity(entity, -1f, 0f);
             }
         }
-
         controller.getReleasedCommands().clear();
-
     }
 
     private void startEntityAttack(Entity entity) {
-        audioService.playSound(SoundAsset.SWORD_HIT);
+        Attack attack = Attack.MAPPER.get(entity);
+        if (attack != null && attack.canAttack()) {
+            attack.startAttack();
+        }
     }
 
-    private void moveEntity(Entity entity, float directionX, float directionY) {
+    private void moveEntity(Entity entity, float dx, float dy) {
         Move move = Move.MAPPER.get(entity);
-        if(move==null) return;
-
-        move.getDirection().x += directionX;
-        move.getDirection().y += directionY;
-
+        if (move != null) {
+            move.getDirection().x += dx;
+            move.getDirection().y += dy;
+        }
     }
 }

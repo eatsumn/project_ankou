@@ -3,11 +3,12 @@ package com.github.denver.ai;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.msg.Telegram;
-import com.github.denver.components.Animation2D;
-import com.github.denver.components.Animation2D.AnimationType;
-import com.github.denver.components.Fsm;
-import com.github.denver.components.Move;
-
+import com.github.denver.component.Animation2D;
+import com.github.denver.component.Animation2D.AnimationType;
+import com.github.denver.component.Attack;
+import com.github.denver.component.Damaged;
+import com.github.denver.component.Fsm;
+import com.github.denver.component.Move;
 
 public enum AnimationState implements State<Entity> {
     IDLE {
@@ -23,7 +24,7 @@ public enum AnimationState implements State<Entity> {
                 Fsm.MAPPER.get(entity).getAnimationFsm().changeState(WALK);
                 return;
             }
-/*
+
             Attack attack = Attack.MAPPER.get(entity);
             if (attack != null && attack.isAttacking()) {
                 Fsm.MAPPER.get(entity).getAnimationFsm().changeState(ATTACK);
@@ -34,8 +35,6 @@ public enum AnimationState implements State<Entity> {
             if (damaged != null) {
                 Fsm.MAPPER.get(entity).getAnimationFsm().changeState(DAMAGED);
             }
-
- */
         }
 
         @Override
@@ -47,6 +46,7 @@ public enum AnimationState implements State<Entity> {
             return false;
         }
     },
+
     WALK {
         @Override
         public void enter(Entity entity) {
@@ -56,15 +56,13 @@ public enum AnimationState implements State<Entity> {
         @Override
         public void update(Entity entity) {
             Move move = Move.MAPPER.get(entity);
-            if (move==null || move.getDirection().isZero() || move.isRooted()) {
+            if (move.getDirection().isZero() || move.isRooted()) {
                 Fsm.MAPPER.get(entity).getAnimationFsm().changeState(IDLE);
             }
-
         }
 
         @Override
         public void exit(Entity entity) {
-
         }
 
         @Override
@@ -73,5 +71,51 @@ public enum AnimationState implements State<Entity> {
         }
     },
 
+    ATTACK {
+        @Override
+        public void enter(Entity entity) {
+            Animation2D.MAPPER.get(entity).setType(AnimationType.ATTACK);
+        }
 
+        @Override
+        public void update(Entity entity) {
+            Attack attack = Attack.MAPPER.get(entity);
+            if (attack.canAttack()) {
+                Fsm.MAPPER.get(entity).getAnimationFsm().changeState(IDLE);
+            }
+        }
+
+        @Override
+        public void exit(Entity entity) {
+        }
+
+        @Override
+        public boolean onMessage(Entity entity, Telegram telegram) {
+            return false;
+        }
+    },
+
+    DAMAGED {
+        @Override
+        public void enter(Entity entity) {
+            Animation2D.MAPPER.get(entity).setType(AnimationType.DAMAGED);
+        }
+
+        @Override
+        public void update(Entity entity) {
+            Animation2D animation2D = Animation2D.MAPPER.get(entity);
+            if (animation2D.isFinished()) {
+                Fsm.MAPPER.get(entity).getAnimationFsm().changeState(IDLE);
+            }
+        }
+
+        @Override
+        public void exit(Entity entity) {
+        }
+
+        @Override
+        public boolean onMessage(Entity entity, Telegram telegram) {
+            return false;
+        }
+    }
 }

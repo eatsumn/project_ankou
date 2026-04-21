@@ -4,15 +4,14 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.github.denver.components.Controller;
+import com.github.denver.component.Controller;
 
-public class GameControllerState implements ControllerState{
+public class GameControllerState implements ControllerState {
 
     private final ImmutableArray<Entity> controllerEntities;
 
-    public GameControllerState(Engine engine){
+    public GameControllerState(Engine engine) {
         this.controllerEntities = engine.getEntitiesFor(Family.all(Controller.class).get());
-
     }
 
     @Override

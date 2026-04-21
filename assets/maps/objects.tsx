@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.12.1" name="objects" tilewidth="80" tileheight="112" tilecount="6" columns="0">
+<tileset version="1.10" tiledversion="1.12.1" name="objects" tilewidth="80" tileheight="112" tilecount="8" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="1" type="Object">
   <properties>
    <property name="animation" value="IDLE"/>
-   <property name="animationSpeed" type="float" value="2"/>
+   <property name="animationSpeed" type="float" value="1"/>
    <property name="attackSound" value="SWING"/>
-   <property name="camFollow" type="bool" value="true"/>
    <property name="damage" type="float" value="7"/>
    <property name="damageDelay" type="float" value="0.2"/>
    <property name="life" type="int" value="12"/>
    <property name="lifeReg" type="float" value="0.25"/>
-   <property name="speed" type="float" value="5"/>
+   <property name="speed" type="float" value="3.5"/>
   </properties>
   <image source="objects/player.png" width="32" height="32"/>
   <objectgroup draworder="index" id="2">
@@ -62,12 +61,14 @@
  </tile>
  <tile id="6" type="Object">
   <properties>
+   <property name="animation" value="IDLE"/>
    <property name="z" type="int" value="0"/>
   </properties>
   <image source="objects/trap.png" width="16" height="16"/>
  </tile>
  <tile id="7" type="Object">
   <properties>
+   <property name="animation" value="IDLE"/>
    <property name="animationSpeed" type="float" value="1"/>
    <property name="bodyType" propertytype="BodyType" value="StaticBody"/>
    <property name="life" type="int" value="99999"/>
@@ -77,5 +78,11 @@
   <objectgroup draworder="index" id="2">
    <object id="1" x="3" y="12" width="26" height="16"/>
   </objectgroup>
+ </tile>
+ <tile id="8" type="Prop">
+  <image source="Church.png" width="64" height="64"/>
+ </tile>
+ <tile id="9" type="Prop">
+  <image source="Bush.png" width="32" height="32"/>
  </tile>
 </tileset>

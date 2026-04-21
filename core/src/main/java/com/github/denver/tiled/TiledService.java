@@ -2,6 +2,7 @@ package com.github.denver.tiled;
 
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -17,6 +18,7 @@ import com.github.denver.Main;
 import com.github.denver.asset.AssetService;
 import com.github.denver.asset.MapAsset;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class TiledService {
@@ -24,61 +26,85 @@ public class TiledService {
     private final World physicWorld;
 
     private TiledMap currentMap;
+
     private Consumer<TiledMap> mapChangeConsumer;
+    private BiConsumer<String, MapObject> loadTriggerConsumer;
     private Consumer<TiledMapTileMapObject> loadObjectConsumer;
     private LoadTileConsumer loadTileConsumer;
 
     public TiledService(AssetService assetService, World physicWorld) {
         this.assetService = assetService;
-        this.mapChangeConsumer = null;
-        this.loadObjectConsumer = null;
-        this.currentMap = null;
-        this.loadTileConsumer = null;
         this.physicWorld = physicWorld;
+        this.mapChangeConsumer = null;
+        this.loadTriggerConsumer = null;
+        this.loadObjectConsumer = null;
+        this.loadTileConsumer = null;
+        this.currentMap = null;
     }
 
-    public TiledMap loadMap(MapAsset mapAsset){
+    public TiledMap loadMap(MapAsset mapAsset) {
         TiledMap tiledMap = this.assetService.load(mapAsset);
         tiledMap.getProperties().put("mapAsset", mapAsset);
-
         return tiledMap;
     }
 
-    public void setMap(TiledMap map) {
-        if(this.currentMap != null) {
+    public void setMap(TiledMap tiledMap) {
+        if (this.currentMap != null) {
             this.assetService.unload(this.currentMap.getProperties().get("mapAsset", MapAsset.class));
 
+            // quick and dirt environment body cleanup (=map boundary and static tile collision bodies)
             Array<Body> bodies = new Array<>();
             physicWorld.getBodies(bodies);
             for (Body body : bodies) {
-                if("environment".equals(body.getUserData())){
+                if ("environment".equals(body.getUserData())) {
                     physicWorld.destroyBody(body);
                 }
             }
         }
 
-        this.currentMap = map;
-        loadMapObjects(map);
+        this.currentMap = tiledMap;
+        loadMapObjects(tiledMap);
         if (this.mapChangeConsumer != null) {
-            this.mapChangeConsumer.accept(map);
+            this.mapChangeConsumer.accept(tiledMap);
         }
-
     }
 
+    public void setMapChangeConsumer(Consumer<TiledMap> mapChangeConsumer) {
+        this.mapChangeConsumer = mapChangeConsumer;
+    }
+
+    public void setLoadObjectConsumer(Consumer<TiledMapTileMapObject> loadObjectConsumer) {
+        this.loadObjectConsumer = loadObjectConsumer;
+    }
+
+    public void setLoadTriggerConsumer(BiConsumer<String, MapObject> loadTriggerConsumer) {
+        this.loadTriggerConsumer = loadTriggerConsumer;
+    }
+
+    public void setLoadTileConsumer(LoadTileConsumer loadTileConsumer) {
+        this.loadTileConsumer = loadTileConsumer;
+    }
+
+    /**
+     * Loads all map objects from different layers and creates map collision boundaries.
+     */
     public void loadMapObjects(TiledMap tiledMap) {
-        for (MapLayer layer : tiledMap.getLayers()){
-            if ("objects".equals(layer.getName())) {
-                loadObjectLayer(layer);
-            } else if(layer instanceof TiledMapTileLayer tileLayer) {
+        for (MapLayer layer : tiledMap.getLayers()) {
+            if (layer instanceof TiledMapTileLayer tileLayer) {
                 loadTileLayer(tileLayer);
+            } else if ("objects".equals(layer.getName())) {
+                loadObjectLayer(layer);
+            } else if ("trigger".equals(layer.getName())) {
+                loadTriggerLayer(layer);
             }
         }
-
-
 
         spawnMapBoundary(tiledMap);
     }
 
+    /**
+     * Creates physics boundaries around the map edges.
+     */
     private void spawnMapBoundary(TiledMap tiledMap) {
         int width = tiledMap.getProperties().get("width", 0, Integer.class);
         int tileW = tiledMap.getProperties().get("tilewidth", 0, Integer.class);
@@ -86,9 +112,8 @@ public class TiledService {
         int tileH = tiledMap.getProperties().get("tileheight", 0, Integer.class);
         float mapW = width * tileW * Main.UNIT_SCALE;
         float mapH = height * tileH * Main.UNIT_SCALE;
-        float halfH = mapH * 0.5f;
         float halfW = mapW * 0.5f;
-
+        float halfH = mapH * 0.5f;
         float boxThickness = 0.5f;
 
         BodyDef bodyDef = new BodyDef();
@@ -118,10 +143,6 @@ public class TiledService {
         shape.setAsBox(halfW, boxThickness, new Vector2(halfW, mapH + boxThickness), 0f);
         body.createFixture(shape, 0f).setFriction(0f);
         shape.dispose();
-
-
-
-
     }
 
     private void loadTileLayer(TiledMapTileLayer tileLayer) {
@@ -135,37 +156,38 @@ public class TiledService {
                 loadTileConsumer.accept(cell.getTile(), x, y);
             }
         }
-
     }
 
-    public void loadObjectLayer(MapLayer objectLayer) {
-        if(loadObjectConsumer == null) return;
+    private void loadTriggerLayer(MapLayer triggerLayer) {
+        if (loadTriggerConsumer == null) return;
+
+        for (MapObject mapObject : triggerLayer.getObjects()) {
+            if (mapObject.getName() == null || mapObject.getName().isBlank()) {
+                throw new GdxRuntimeException("Trigger must have a name: " + mapObject);
+            }
+
+            if (mapObject instanceof RectangleMapObject rectMapObj) {
+                loadTriggerConsumer.accept(mapObject.getName(), rectMapObj);
+            } else {
+                throw new GdxRuntimeException("Unsupported trigger: " + mapObject.getClass().getSimpleName());
+            }
+        }
+    }
+
+    private void loadObjectLayer(MapLayer objectLayer) {
+        if (loadObjectConsumer == null) return;
 
         for (MapObject mapObject : objectLayer.getObjects()) {
-            if(mapObject instanceof TiledMapTileMapObject tileMapObject){
+            if (mapObject instanceof TiledMapTileMapObject tileMapObject) {
                 loadObjectConsumer.accept(tileMapObject);
             } else {
                 throw new GdxRuntimeException("Unsupported object: " + mapObject.getClass().getSimpleName());
             }
         }
-
-    }
-
-    public void setMapChangeConsumer(Consumer<TiledMap> mapChangeConsumer) {
-        this.mapChangeConsumer = mapChangeConsumer;
-    }
-
-    public void setLoadObjectConsumer(Consumer<TiledMapTileMapObject> loadObjectConsumer) {
-        this.loadObjectConsumer = loadObjectConsumer;
-    }
-
-    public void setLoadTileConsumer(LoadTileConsumer loadTileConsumer) {
-        this.loadTileConsumer = loadTileConsumer;
     }
 
     @FunctionalInterface
     public interface LoadTileConsumer {
         void accept(TiledMapTile tile, float x, float y);
     }
-
 }
