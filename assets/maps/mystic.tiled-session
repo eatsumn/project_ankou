@@ -1,0 +1,143 @@
+{
+    "activeFile": "mainmap.tmx",
+    "expandedProjectPaths": [
+        ".",
+        "savestate"
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "D:/SimulatedDesktop/Screenshot 2026-04-21 205251.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/SimulatedDesktop/Screenshot 2026-04-21 210212.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/SimulatedDesktop/church.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/SimulatedDesktop/demoooooooo/lalalala.tmx": {
+            "scale": 0.9829861111111111,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 359.61850936064997,
+                "y": 351.9886965736489
+            }
+        },
+        "D:/SimulatedDesktop/dfgs.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/SimulatedDesktop/fence.tsx": {
+            "scaleInDock": 1
+        },
+        "D:/SimulatedDesktop/oneeeee.tsx": {
+            "scaleInDock": 1
+        },
+        "GraveYard.tmx": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 282.25,
+                "y": 410.5
+            }
+        },
+        "TilesetGraveyard.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
+        "graveyard_tileset.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        },
+        "mainmap.tmx": {
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 1.5,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 4.666666666666668,
+                "y": 78.33333333333334
+            }
+        },
+        "newmap.tmx": {
+            "expandedObjectLayers": [
+                5
+            ],
+            "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": -7.333333333333336,
+                "y": 182
+            }
+        },
+        "objects.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 0.25
+        },
+        "omg (1)/demoooooooo/lalalala.tmx": {
+            "scale": 1,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 335.5,
+                "y": 382
+            }
+        },
+        "savestate/TilesetGraveyard.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "savestate/newmap.tmx": {
+            "scale": 1.375125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 219.2527952004363,
+                "y": 199.98181983456047
+            }
+        },
+        "savestate/objects.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "savestate/tileset.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "tileset.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 2,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "D:/Projects/game_development/cursor_test/PROJECT/project_a/assets/maps/objects",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+        "objects.tsx",
+        "tileset.tsx",
+        "TilesetGraveyard.tsx",
+        "mainmap.tmx",
+        "newmap.tmx"
+    ],
+    "project": "mystic.tiled-project",
+    "property.type": "int",
+    "recentFiles": [
+        "objects.tsx",
+        "tileset.tsx",
+        "TilesetGraveyard.tsx",
+        "newmap.tmx",
+        "mainmap.tmx",
+        "savestate/newmap.tmx",
+        "graveyard_tileset.tsx",
+        "D:/SimulatedDesktop/demoooooooo/lalalala.tmx",
+        "GraveYard.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
