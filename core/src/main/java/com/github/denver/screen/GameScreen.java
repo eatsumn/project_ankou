@@ -18,19 +18,7 @@ import com.github.denver.asset.SkinAsset;
 import com.github.denver.audio.AudioService;
 import com.github.denver.input.GameControllerState;
 import com.github.denver.input.KeyboardController;
-import com.github.denver.system.AnimationSystem;
-import com.github.denver.system.AttackSystem;
-import com.github.denver.system.CameraSystem;
-import com.github.denver.system.ControllerSystem;
-import com.github.denver.system.DamagedSystem;
-import com.github.denver.system.FacingSystem;
-import com.github.denver.system.FsmSystem;
-import com.github.denver.system.LifeSystem;
-import com.github.denver.system.PhysicDebugRenderSystem;
-import com.github.denver.system.PhysicMoveSystem;
-import com.github.denver.system.PhysicSystem;
-import com.github.denver.system.RenderSystem;
-import com.github.denver.system.TriggerSystem;
+import com.github.denver.system.*;
 import com.github.denver.tiled.TiledAshleyConfigurator;
 import com.github.denver.tiled.TiledService;
 import com.github.denver.ui.model.GameViewModel;
@@ -50,6 +38,8 @@ public class GameScreen extends ScreenAdapter {
     private final World physicWorld;
     private final KeyboardController keyboardController;
     private final AudioService audioService;
+    private final GhostAiSystem ghostAiSystem;
+    private final GameSessionSystem gameSessionSystem;
 
     public GameScreen(Main game) {
         this.game = game;
@@ -64,8 +54,11 @@ public class GameScreen extends ScreenAdapter {
         this.engine = new Engine();
         this.tiledAshleyConfigurator = new TiledAshleyConfigurator(this.engine, this.physicWorld, this.game.getAssetService());
         this.keyboardController = new KeyboardController(GameControllerState.class, engine, null);
+        this.ghostAiSystem = new GhostAiSystem();
+        this.gameSessionSystem = new GameSessionSystem(viewModel, tiledAshleyConfigurator, tiledService::getCurrentMap);
 
         // add ECS systems
+        this.engine.addSystem(this.ghostAiSystem);
         this.engine.addSystem(new PhysicMoveSystem());
         this.engine.addSystem(new PhysicSystem(physicWorld, 1 / 60f));
         this.engine.addSystem(new FacingSystem());
@@ -80,9 +73,14 @@ public class GameScreen extends ScreenAdapter {
         this.engine.addSystem(new LifeSystem(this.viewModel));
         this.engine.addSystem(new AnimationSystem(game.getAssetService()));
         this.engine.addSystem(new CameraSystem(game.getCamera()));
+        this.engine.addSystem(new WeaponSystem(game.getViewport()));
         this.engine.addSystem(new RenderSystem(game.getBatch(), game.getViewport(), game.getCamera()));
         this.engine.addSystem(new PhysicDebugRenderSystem(this.physicWorld, game.getCamera()));
         this.engine.addSystem(new ControllerSystem(game));
+        this.engine.addSystem(this.gameSessionSystem);
+
+        game.getCamera().zoom = 1.5f;
+
     }
 
     @Override
@@ -95,13 +93,17 @@ public class GameScreen extends ScreenAdapter {
         Consumer<TiledMap> renderConsumer = this.engine.getSystem(RenderSystem.class)::setMap;
         Consumer<TiledMap> cameraConsumer = this.engine.getSystem(CameraSystem.class)::setMap;
         Consumer<TiledMap> audioConsumer = this.audioService::setMap;
-        this.tiledService.setMapChangeConsumer(renderConsumer.andThen(cameraConsumer).andThen(audioConsumer));
+        Consumer<TiledMap> ghostBoundsConsumer = this.ghostAiSystem::setMapBoundsFrom;
+        this.tiledService.setMapChangeConsumer(
+            renderConsumer.andThen(cameraConsumer).andThen(audioConsumer).andThen(ghostBoundsConsumer));
         this.tiledService.setLoadTriggerConsumer(tiledAshleyConfigurator::onLoadTrigger);
         this.tiledService.setLoadObjectConsumer(tiledAshleyConfigurator::onLoadObject);
         this.tiledService.setLoadTileConsumer(tiledAshleyConfigurator::onLoadTile);
 
+        this.gameSessionSystem.resetSession();
         TiledMap startMap = this.tiledService.loadMap(MapAsset.MAIN);
         this.tiledService.setMap(startMap);
+        this.viewModel.attachGhostKillListeners(this.engine);
     }
 
     @Override
@@ -119,7 +121,9 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         delta = Math.min(1 / 30f, delta);
-        engine.update(delta);
+        if (!viewModel.isSessionComplete()) {
+            engine.update(delta);
+        }
 
         uiViewport.apply();
         stage.getBatch().setColor(Color.WHITE);

@@ -8,9 +8,9 @@ public class Transform implements Component, Comparable<Transform> {
     public static final ComponentMapper<Transform> MAPPER = ComponentMapper.getFor(Transform.class);
 
     private final Vector2 position;
-    private final int z;
+    private int z;
     private final Vector2 size;
-    private final Vector2 scaling;
+    private Vector2 scaling;
     private float rotationDeg;
     private float sortOffsetY;
 
@@ -41,6 +41,12 @@ public class Transform implements Component, Comparable<Transform> {
         return Float.compare(this.position.x, other.position.x);
     }
 
+    public void setRotationDeg(float rotationDeg) {
+        this.rotationDeg = rotationDeg;
+    }
+
+
+
     public Vector2 getPosition() {
         return position;
     }
@@ -49,12 +55,25 @@ public class Transform implements Component, Comparable<Transform> {
         return size;
     }
 
+    public void setScaling(float x, float y) {
+        this.scaling.x = x;
+        this.scaling.y = y;
+    }
+
     public Vector2 getScaling() {
         return scaling;
     }
 
     public float getRotationDeg() {
-        return rotationDeg;
+        return this.rotationDeg;
+    }
+
+    public int getZ() {
+        return z;
+    }
+
+    public void setZ(int z) {
+        this.z = z;
     }
 
 }

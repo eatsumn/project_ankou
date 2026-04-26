@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.denver.Main;
+import com.github.denver.component.Facing;
 import com.github.denver.component.Graphic;
 import com.github.denver.component.Transform;
 
@@ -77,17 +78,22 @@ public class RenderSystem extends SortedIteratingSystem implements Disposable {
             return;
         }
 
+
+        Facing facing = Facing.MAPPER.get(entity);
         Vector2 position = transform.getPosition();
         Vector2 scaling = transform.getScaling();
         Vector2 size = transform.getSize();
+        float originX = size.x * graphic.getOriginFracX();
+        float originY = size.y * graphic.getOriginFracY();
+        float width = graphic.isFlipX() ? scaling.x : -scaling.x;
         batch.setColor(graphic.getColor());
         batch.draw(
             graphic.getRegion(),
-            position.x - (1f - scaling.x) * size.x * 0.5f,
-            position.y - (1f - scaling.y) * size.y * 0.5f,
-            size.x * 0.5f, size.y * 0.5f,
+            position.x - (1f - scaling.x) * originX,
+            position.y - (1f - scaling.y) * originY,
+            originX, originY,
             size.x, size.y,
-            -scaling.x, scaling.y,
+            width, scaling.y,
             transform.getRotationDeg()
         );
     }

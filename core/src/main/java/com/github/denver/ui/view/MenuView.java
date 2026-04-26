@@ -1,5 +1,7 @@
 package com.github.denver.ui.view;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -64,12 +66,13 @@ public class MenuView extends View<MenuViewModel> {
     protected void setupUI() {
         setFillParent(true);
 
+
         Image image = new Image(skin, "banner");
         add(image).row();
 
         setupMenuContent();
 
-        Label label = new Label("by Quillraven 2025", skin, "small");
+        Label label = new Label("Made by J.SUL, A.SUP, K.JUA", skin, "small");
         label.setColor(skin.getColor("white"));
         add(label).padRight(5.0f).padBottom(5f).expand().align(Align.bottomRight);
     }
@@ -112,7 +115,7 @@ public class MenuView extends View<MenuViewModel> {
         Table table = new Table();
         table.setName(menuOption.name());
         Label label = new Label(title, skin);
-        label.setColor(skin.getColor("sand"));
+        label.setColor(skin.getColor("black"));
         table.add(label).row();
 
         Slider slider = new Slider(0.0f, 1f, 0.05f, false, skin);

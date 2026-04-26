@@ -40,6 +40,17 @@ public class Attack implements Component {
         attackTimer = Math.max(0f, attackTimer - deltaTime);
     }
 
+    /**
+     * Normalized attack window progress for visuals: 0 when the swing starts, 1 when it ends.
+     * Returns 0 when not attacking.
+     */
+    public float getAttackSwingPhase() {
+        if (damageDelay <= 0f || attackTimer <= 0f) {
+            return 0f;
+        }
+        return 1f - attackTimer / damageDelay;
+    }
+
     public float getDamage() {
         return damage;
     }

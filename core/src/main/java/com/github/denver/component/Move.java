@@ -20,6 +20,10 @@ public class Move implements Component {
         return maxSpeed;
     }
 
+    public void setMaxSpeed(float maxSpeed) {
+        this.maxSpeed = maxSpeed;
+    }
+
     public Vector2 getDirection() {
         return direction;
     }

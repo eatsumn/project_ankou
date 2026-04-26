@@ -21,7 +21,7 @@ public class Facing implements Component {
     }
 
     public enum FacingDirection {
-        UP, DOWN, LEFT, RIGHT;
+        UP, DOWN;
 
         private final String atlasKey;
 

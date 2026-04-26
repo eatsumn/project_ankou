@@ -12,7 +12,7 @@ import com.github.denver.component.CameraFollow;
 import com.github.denver.component.Transform;
 
 public class CameraSystem extends IteratingSystem {
-    private static final float CAM_OFFSET_Y = 1f; // make the camera look up 'X' additional tiles
+    private static final float CAM_OFFSET_Y = 0f; // make the camera look up 'X' additional tiles
 
     private final Camera camera;
     private final float smoothingFactor;
@@ -65,6 +65,10 @@ public class CameraSystem extends IteratingSystem {
         this.targetPosition.set(targetX, targetY);
     }
 
+    public Vector2 getTargetPosition() {
+        return targetPosition;
+    }
+
     /**
      * Sets up camera for a new map and positions it at the target entity.
      */
@@ -83,4 +87,6 @@ public class CameraSystem extends IteratingSystem {
 
         processEntity(camEntity, 0f);
     }
+
+
 }

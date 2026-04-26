@@ -85,6 +85,10 @@ public class TiledService {
         this.loadTileConsumer = loadTileConsumer;
     }
 
+    public TiledMap getCurrentMap() {
+        return currentMap;
+    }
+
     /**
      * Loads all map objects from different layers and creates map collision boundaries.
      */

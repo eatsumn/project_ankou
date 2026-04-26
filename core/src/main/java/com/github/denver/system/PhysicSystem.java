@@ -7,12 +7,14 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.github.denver.component.Ghost;
 import com.github.denver.component.Physic;
 import com.github.denver.component.Player;
 import com.github.denver.component.Transform;
@@ -109,15 +111,39 @@ public class PhysicSystem extends IteratingSystem implements EntityListener, Con
     @Override
     public void beginContact(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();
-        Object userDataA = fixtureA.getBody().getUserData();
         Fixture fixtureB = contact.getFixtureB();
-        Object userDataB = fixtureB.getBody().getUserData();
+        ghostBounceWallContact(fixtureA, fixtureB);
+        ghostBounceWallContact(fixtureB, fixtureA);
 
+        Object userDataA = fixtureA.getBody().getUserData();
+        Object userDataB = fixtureB.getBody().getUserData();
         if (!(userDataA instanceof Entity entityA) || !(userDataB instanceof Entity entityB)) {
             return;
         }
 
         playerTriggerContact(entityA, fixtureA, entityB, fixtureB);
+    }
+
+    private static void ghostBounceWallContact(Fixture ghostFixture, Fixture otherFixture) {
+        Object ghostUd = ghostFixture.getBody().getUserData();
+        if (!(ghostUd instanceof Entity entity)) {
+            return;
+        }
+        Ghost ghost = Ghost.MAPPER.get(entity);
+        if (ghost == null || ghost.getKind() != Ghost.Kind.BOUNCE_WALLS) {
+            return;
+        }
+        Body other = otherFixture.getBody();
+        if (other.getType() != BodyDef.BodyType.StaticBody) {
+            return;
+        }
+        if (!"environment".equals(other.getUserData())) {
+            return;
+        }
+        if (otherFixture.isSensor()) {
+            return;
+        }
+        ghost.notifyWallHit();
     }
 
     private static void playerTriggerContact(Entity entityA, Fixture fixtureA, Entity entityB, Fixture fixtureB) {

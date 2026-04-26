@@ -10,11 +10,6 @@ public class TexturePackerTool {
 
         TexturePacker.process(ObjectIn, OutDir, objectFileName);
 
-        String CharacterIn = "assets_raw/characters";
-        String characterFileName = "characters";
-
-        TexturePacker.process(CharacterIn, OutDir, characterFileName);
-
 
     }
 }
